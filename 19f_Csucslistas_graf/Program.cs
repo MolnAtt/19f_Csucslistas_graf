@@ -137,6 +137,83 @@ namespace _19f_Csucslistas_graf
 				}
 				return false;
 			}
+
+			public bool El_lehet_e_jutni_melysegivel(int innen, int ide)
+			{
+				int fehér = 0;
+				int szürke = 1;
+				int fekete = 2;
+
+				int[] szín = new int[szomszedsagi_lista.Count];
+				// mivel az int kezdőértéke mindig 0, most minden fehér!
+
+				Stack<int> tennivalok = new Stack<int>();
+				tennivalok.Push(innen);
+				szín[innen] = szürke;
+
+				while (tennivalok.Count != 0)
+				{
+					int feldolgozando = tennivalok.Pop();
+					if (feldolgozando == ide)
+					{
+						return true;
+					}
+					szín[feldolgozando] = fekete;
+					// most jönnek a szomszédok:
+
+					foreach (int szomszed in szomszedsagi_lista[feldolgozando])
+					{
+						if (szín[szomszed] == fehér)
+						{
+							tennivalok.Push(szomszed);
+							szín[szomszed] = szürke;
+						}
+					}
+				}
+				return false;
+			}
+
+
+			public int Hany_csucs_erheto_el_szelessegivel(int innen)
+			{
+				int fehér = 0;
+				int szürke = 1;
+				int fekete = 2;
+
+				int[] szín = new int[szomszedsagi_lista.Count];
+				// mivel az int kezdőértéke mindig 0, most minden fehér!
+
+				Queue<int> tennivalok = new Queue<int>(); // nem dolgozta fel! csak bevette tennivalónak.
+				tennivalok.Enqueue(innen);
+				szín[innen] = szürke;
+
+				int db = 0; // mert a kezdőérték is egy! És mostantól megszámoljuk a szomszédait.
+						    // Az első kiinduló csúcs tekintetében most saját magát beleszámoljuk.
+							// most így értelmezzük, hogy az elérhető. 
+
+
+				while (tennivalok.Count != 0)
+				{
+					int feldolgozando = tennivalok.Dequeue();
+					// Hogyan dolgozunk most fel? Mit jelent most ez ebben az esetben?
+					// azt mondjuk, hogy "megvagy". És eggyel növeljük az elért dolgok számát. 
+					// szélességinek és mélységinek most nincs jelentősége.
+					db++;
+                    Console.WriteLine($"feketere szinezem: {feldolgozando}, ezzel a db: {db}"); // itt dolgozza fel
+                    szín[feldolgozando] = fekete;
+					// most jönnek a szomszédok:
+
+					foreach (int szomszed in szomszedsagi_lista[feldolgozando])
+					{
+						if (szín[szomszed] == fehér)
+						{
+							tennivalok.Enqueue(szomszed);
+							szín[szomszed] = szürke;
+						}
+					}
+				}
+				return db;
+			}
 		}
 
 		static void Main(string[] args)
@@ -144,7 +221,12 @@ namespace _19f_Csucslistas_graf
 			Szomszedsagi_listas_graf graf = new Szomszedsagi_listas_graf();
 			graf.Diagnosztika();
 
-            Console.WriteLine(graf.El_lehet_e_jutni_szelessegivel(5, 0));
+			Console.WriteLine(graf.El_lehet_e_jutni_szelessegivel(5, 0));
+			Console.WriteLine(graf.El_lehet_e_jutni_melysegivel(5, 0));
+			Console.WriteLine(graf.Hany_csucs_erheto_el_szelessegivel(5));
+			Console.WriteLine(graf.Hany_csucs_erheto_el_szelessegivel(0));
+			Console.WriteLine(graf.Hany_csucs_erheto_el_szelessegivel(6));
+			Console.WriteLine(graf.Hany_csucs_erheto_el_szelessegivel(8));
 		}
 	}
 }
