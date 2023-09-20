@@ -187,9 +187,8 @@ namespace _19f_Csucslistas_graf
 				tennivalok.Enqueue(innen);
 				szín[innen] = szürke;
 
-				int db = 0; // mert a kezdőérték is egy! És mostantól megszámoljuk a szomszédait.
-						    // Az első kiinduló csúcs tekintetében most saját magát beleszámoljuk.
-							// most így értelmezzük, hogy az elérhető. 
+				int db = 0; // azt számoljuk igazából, hogy hány dolog lesz fekete.
+							// Abba a hurokmentes kezdőcsúcs is beleértődik.
 
 
 				while (tennivalok.Count != 0)
@@ -199,8 +198,8 @@ namespace _19f_Csucslistas_graf
 					// azt mondjuk, hogy "megvagy". És eggyel növeljük az elért dolgok számát. 
 					// szélességinek és mélységinek most nincs jelentősége.
 					db++;
-                    Console.WriteLine($"feketere szinezem: {feldolgozando}, ezzel a db: {db}"); // itt dolgozza fel
-                    szín[feldolgozando] = fekete;
+					Console.WriteLine($"feketere szinezem: {feldolgozando}, ezzel a db: {db}"); // itt dolgozza fel
+					szín[feldolgozando] = fekete;
 					// most jönnek a szomszédok:
 
 					foreach (int szomszed in szomszedsagi_lista[feldolgozando])
@@ -214,7 +213,162 @@ namespace _19f_Csucslistas_graf
 				}
 				return db;
 			}
+
+
+			public int Hany_paros_csucs_erheto_el_szelessegivel(int innen)
+			{
+				int fehér = 0;
+				int szürke = 1;
+				int fekete = 2;
+
+				int[] szín = new int[szomszedsagi_lista.Count];
+				// mivel az int kezdőértéke mindig 0, most minden fehér!
+
+				Queue<int> tennivalok = new Queue<int>(); // nem dolgozta fel! csak bevette tennivalónak.
+				tennivalok.Enqueue(innen);
+				szín[innen] = szürke;
+
+				int db = 0; // azt számoljuk igazából, hogy hány dolog lesz fekete.
+							// Abba a hurokmentes kezdőcsúcs is beleértődik.
+
+
+				while (tennivalok.Count != 0)
+				{
+					int feldolgozando = tennivalok.Dequeue();
+					// Hogyan dolgozunk most fel? Mit jelent most ez ebben az esetben?
+					// azt mondjuk, hogy "megvagy". És eggyel növeljük az elért dolgok számát. 
+					// szélességinek és mélységinek most nincs jelentősége.
+					if (feldolgozando % 2 == 0)
+					{
+						db++;
+					}
+					Console.WriteLine($"feketere szinezem: {feldolgozando}, ezzel a db: {db}"); // itt dolgozza fel
+					szín[feldolgozando] = fekete;
+					// most jönnek a szomszédok:
+
+					foreach (int szomszed in szomszedsagi_lista[feldolgozando])
+					{
+						if (szín[szomszed] == fehér)
+						{
+							tennivalok.Enqueue(szomszed);
+							szín[szomszed] = szürke;
+						}
+					}
+				}
+				return db;
+			}
+
+			public int Mely_csucsok_erhetok_el_szelessegivel(int innen)
+			{
+				int fehér = 0;
+				int szürke = 1;
+				int fekete = 2;
+
+				int[] szín = new int[szomszedsagi_lista.Count];
+				// mivel az int kezdőértéke mindig 0, most minden fehér!
+
+				Queue<int> tennivalok = new Queue<int>(); // nem dolgozta fel! csak bevette tennivalónak.
+				tennivalok.Enqueue(innen);
+				szín[innen] = szürke;
+
+				int db = 0; // azt számoljuk igazából, hogy hány dolog lesz fekete.
+							// Abba a hurokmentes kezdőcsúcs is beleértődik.
+
+
+				while (tennivalok.Count != 0)
+				{
+					int feldolgozando = tennivalok.Dequeue();
+					// Hogyan dolgozunk most fel? Mit jelent most ez ebben az esetben?
+					// azt mondjuk, hogy "megvagy". És eggyel növeljük az elért dolgok számát. 
+					// szélességinek és mélységinek most nincs jelentősége.
+					if (feldolgozando % 2 == 0)
+					{
+						db++;
+					}
+					Console.WriteLine($"feketere szinezem: {feldolgozando}, ezzel a db: {db}"); // itt dolgozza fel
+					szín[feldolgozando] = fekete;
+					// most jönnek a szomszédok:
+
+					foreach (int szomszed in szomszedsagi_lista[feldolgozando])
+					{
+						if (szín[szomszed] == fehér)
+						{
+							tennivalok.Enqueue(szomszed);
+							szín[szomszed] = szürke;
+						}
+					}
+				}
+				return db;
+			}
+
+			public List<int> Honnan_tomb_felgongyolitese(int[] honnan, int végpont)
+			{
+				List<int> result = new List<int> { végpont }; // mert itt végződik
+				while (végpont != -1)
+				{
+					result.Add(honnan[végpont]);
+					végpont = honnan[végpont]; // az új végpont az legyen, ahova mutat.
+				}
+				result.Reverse();
+				return result;
+				// de, ez most fordítva lesz.
+			}
+
+			public List<int> Legrovidebb_ut(int innen, int ide) // listát adunk vissza! A lépések száma a lista hossza.
+			{
+				int fehér = 0;
+				int szürke = 1;
+				int fekete = 2;
+
+				int[] szín = new int[szomszedsagi_lista.Count];
+				// mivel az int kezdőértéke mindig 0, most minden fehér!
+
+				Queue<int> tennivalok = new Queue<int>();
+				tennivalok.Enqueue(innen);
+				szín[innen] = szürke;
+					
+
+				List<int> result = new List<int>();
+
+				// honnan tömb:
+				int[] honnan = new int[szomszedsagi_lista.Count];// mekkora? ahány csúcs van összesen!
+																 // fel kell tölteni -1-esekkel, mert ha nem teszünk ilyet, csupa 0 lesz benne. ami most mást jelent.
+				for (int i = 0; i < szomszedsagi_lista.Count; i++)
+				{
+					honnan[i] = -1;
+				}
+
+				while (tennivalok.Count != 0)
+				{
+					int feldolgozando = tennivalok.Dequeue();
+					if (feldolgozando == ide)
+					{
+						return Honnan_tomb_felgongyolitese(honnan, ide); // ezt később megírjuk.
+											 // A feldolgozás során az az info már elveszett, hogy honnan is értünk ide!
+											 // hol áll rendelkezésre ez az információ?
+											 // ezt kéne most befejezni. Megtaláltad az elemet. Fel kellene göngyölíteni a honnan-t!
+					}
+					szín[feldolgozando] = fekete;
+					// most jönnek a szomszédok:
+
+					foreach (int szomszed in szomszedsagi_lista[feldolgozando])
+					{
+						if (szín[szomszed] == fehér)
+						{
+							tennivalok.Enqueue(szomszed); // itt! Amikor bevesszük! Itt tudjuk, hogy kit honnan értünk el!
+							// két node van itt most, a feldolgozando és a szomszed.
+							honnan[szomszed] = feldolgozando; // honnan[3]=1, mert a 3-as node-ot az 1-esből értük el
+							// ez ennyi. 
+							szín[szomszed] = szürke;
+						}
+					}
+				}
+				return null;// mi a teendő, ha nem találja meg a dolgot. De listát kell visszaadnunk... A lista class, így lehet ilyet. 
+			}
+
 		}
+
+
 
 		static void Main(string[] args)
 		{
@@ -227,7 +381,14 @@ namespace _19f_Csucslistas_graf
 			Console.WriteLine(graf.Hany_csucs_erheto_el_szelessegivel(0));
 			Console.WriteLine(graf.Hany_csucs_erheto_el_szelessegivel(6));
 			Console.WriteLine(graf.Hany_csucs_erheto_el_szelessegivel(8));
-		}
+			Console.WriteLine(graf.Hany_paros_csucs_erheto_el_szelessegivel(6));
+			foreach (int elem in graf.Legrovidebb_ut(0,5))
+			{
+                Console.Write($"{elem} -> ");
+            }
+            Console.WriteLine();
+			Console.ReadKey();
+        }
 	}
 }
 
